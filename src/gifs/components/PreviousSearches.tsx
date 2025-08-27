@@ -2,10 +2,11 @@ import type {FC} from "react";
 
 interface PreviousSearchesProps {
   previousSearches: string[];
+  onLabelClicked: (term: string) => void
 }
 
 
-export const PreviousSearches: FC<PreviousSearchesProps> = ({previousSearches}) => {
+export const PreviousSearches: FC<PreviousSearchesProps> = ({previousSearches, onLabelClicked}) => {
   return (
     <>
       <div className={'previous-searches'}>
@@ -13,7 +14,7 @@ export const PreviousSearches: FC<PreviousSearchesProps> = ({previousSearches}) 
         <ul className={'previous-searches-list'}>
           {
             previousSearches.map(search => (
-              <li key={search}>{search}</li>
+              <li key={search} onClick={() => onLabelClicked(search)}>{search}</li>
             ))
           }
         </ul>
