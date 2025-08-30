@@ -1,16 +1,18 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { getGifByQuery } from "../actions/get-gif-by-query.action";
 import type { Gif } from "../interfaces/gif.interface";
 
-const gifsCahe: Record<string, Gif[]> = {};
+// const gifsCache: Record<string, Gif[]> = {};
 
 export const useGifs = () => {
   const [previousTerms, setPreviousTerms] = useState<string[]>([]);
   const [gifs, setGifs] = useState<Gif[]>([]);
 
+  const gifsCache = useRef<Record<string, Gif[]>>({});
+
   const handleTermClicked = async (term: string) => {
-    if (gifsCahe[term]) {
-      setGifs(gifsCahe[term]);
+    if (gifsCache.current[term]) {
+      setGifs(gifsCache.current[term]);
       return;
     }
     const gifs = await getGifByQuery(term);
@@ -36,7 +38,7 @@ export const useGifs = () => {
     const gifs = await getGifByQuery(query);
     setGifs(gifs);
 
-    gifsCahe[normalizedQuery] = gifs;
+    gifsCache.current[normalizedQuery] = gifs;
   };
   return {
     gifs,
