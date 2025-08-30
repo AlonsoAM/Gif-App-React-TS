@@ -1,19 +1,22 @@
-import {mockGifs} from "./mock-data/gifs.mock.ts";
 import {CustomHeader} from "./shared/components/CustomHeader.tsx";
 import {SearchBar} from "./shared/components/SearchBar.tsx";
 import {PreviousSearches} from "./gifs/components/PreviousSearches.tsx";
 import {GifList} from "./gifs/components/GifList.tsx";
 import {useState} from "react";
+import {getGifByQuery} from "./gifs/actions/get-gif-by-query.action.ts";
+import type {Gif} from "./gifs/interfaces/gif.interface.ts";
 
 export const GifApp = () => {
 
   const [previousTerms, setPreviousTerms] = useState<string[]>([]);
+  const [gifs, setGifs] = useState<Gif[]>([]);
 
-  const handleTermClicked = (term: string) => {
-    console.log(term)
+  const handleTermClicked = async (term: string) => {
+    const gifs = await getGifByQuery(term)
+    setGifs(gifs)
   }
 
-  const handleSearch = (query: string) => {
+  const handleSearch = async (query: string) => {
     // Validar que el query no esté vacío
     if (!query || query.trim() === '')  return
 
@@ -29,7 +32,8 @@ export const GifApp = () => {
       return newTerms.slice(0, 8)
     })
 
-    console.log({query: normalizedQuery})
+    const gifs =await getGifByQuery(query)
+    setGifs(gifs)
   }
 
 
@@ -42,7 +46,7 @@ export const GifApp = () => {
       {/*Búsquedas Previas*/}
       <PreviousSearches previousSearches={previousTerms} onLabelClicked={handleTermClicked}/>
       {/*Gifs*/}
-      <GifList gifs={mockGifs}/>
+      <GifList gifs={gifs}/>
     </>
   )
 }
